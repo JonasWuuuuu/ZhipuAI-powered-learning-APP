@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutureTech AI - 综合学习平台</title>
+    <link rel="stylesheet" href="css/style.css?v=1.0.26">
+    <!-- MathJax for LaTeX formula rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>FutureTech</h1>
+                <p data-i18n-key="sidebar.subtitle">AI 学习助手</p>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-page="question-generator" onclick="window.app && window.app.switchPage('question-generator'); return false;">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label" data-i18n-key="nav.question-generator">开始做题</span>
+                    <span class="nav-badge" data-page="question-generator" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="answer-checker" onclick="window.app && window.app.switchPage('answer-checker'); return false;">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-label" data-i18n-key="nav.answer-checker">智能批改</span>
+                    <span class="nav-badge" data-page="answer-checker" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="learning-plan" onclick="window.app && window.app.switchPage('learning-plan'); return false;">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-label" data-i18n-key="nav.learning-plan">制定计划</span>
+                    <span class="nav-badge" data-page="learning-plan" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="ai-chat" onclick="window.app && window.app.switchPage('ai-chat'); return false;">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label" data-i18n-key="nav.ai-chat">智能问答</span>
+                    <span class="nav-badge" data-page="ai-chat" style="display: none;"></span>
+                </button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-page="plan-manager" onclick="window.app && window.app.switchPage('plan-manager'); return false;">
+                    <span class="nav-icon">⏰</span>
+                    <span class="nav-label" data-i18n-key="nav.plan-manager">我的计划</span>
+                    <span class="nav-badge" data-page="plan-manager" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="progress" onclick="window.app && window.app.switchPage('progress'); return false;">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label" data-i18n-key="nav.progress">学习统计</span>
+                    <span class="nav-badge" data-page="progress" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="history" onclick="window.app && window.app.switchPage('history'); return false;">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label" data-i18n-key="nav.history">内容归档</span>
+                    <span class="nav-badge" data-page="history" style="display: none;"></span>
+                </button>
+                <div class="nav-divider"></div>
+                <button class="nav-item" data-page="learning-settings" onclick="window.app && window.app.switchPage('learning-settings'); return false;">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label" data-i18n-key="nav.learning-settings">学习偏好</span>
+                    <span class="nav-badge" data-page="learning-settings" style="display: none;"></span>
+                </button>
+                <button class="nav-item" data-page="user-settings" onclick="window.app && window.app.switchPage('user-settings'); return false;">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-label" data-i18n-key="nav.user-settings">系统设置</span>
+                    <span class="nav-badge" data-page="user-settings" style="display: none;"></span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>v1.0.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-title-section">
+                        <h1 id="page-title">智能出题器</h1>
+                        <button class="help-btn" id="help-btn" onclick="window.app && window.app.showHelpModal()">?</button>
+                    </div>
+                    <p id="page-subtitle">智能语音和文本交互系统</p>
+                </div>
+                <!-- User Menu in Top Right -->
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <span id="user-display">👤 登录</span>
+                        <span class="user-dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" class="dropdown-item" onclick="app.showLoginModal(); return false;">
+                            🔐 登录/注册
+                        </a>
+                        <div class="dropdown-divider" id="auth-divider" style="display: none;"></div>
+                        <a href="#" class="dropdown-item" id="logout-item" style="display: none;" onclick="app.logout(); return false;">
+                            🚪 登出
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main">
+                <!-- Page 1: Question Generator (智能出题器) -->
+                <div class="page-content active" id="question-generator">
+                    <div class="page-wrapper">
+                        <!-- Input Section -->
+                        <section class="input-section">
+                            <h2 id="qg-input-title" data-i18n-key="qg.input-title">题目要求输入</h2>
+
+                            <!-- Grade/Year Group Selection -->
+                            <div class="form-group">
+                                <label for="qg-grade" class="qg-grade-label" data-i18n-key="qg.grade-label">年级/水平</label>
+                                <select id="qg-grade">
+                                    <option value="" data-i18n-key="qg.select-default">-- 请选择 --</option>
+                                    <option value="primary-1" data-i18n-key="grade.primary-1">小学 1 年级</option>
+                                    <option value="primary-2" data-i18n-key="grade.primary-2">小学 2 年级</option>
+                                    <option value="primary-3" data-i18n-key="grade.primary-3">小学 3 年级</option>
+                                    <option value="primary-4" data-i18n-key="grade.primary-4">小学 4 年级</option>
+                                    <option value="primary-5" data-i18n-key="grade.primary-5">小学 5 年级</option>
+                                    <option value="primary-6" data-i18n-key="grade.primary-6">小学 6 年级</option>
+                                    <option value="junior-1" data-i18n-key="grade.junior-1">初中 1 年级</option>
+                                    <option value="junior-2" data-i18n-key="grade.junior-2">初中 2 年级</option>
+                                    <option value="junior-3" data-i18n-key="grade.junior-3">初中 3 年级</option>
+                                    <option value="senior-1" data-i18n-key="grade.senior-1">高中 1 年级</option>
+                                    <option value="senior-2" data-i18n-key="grade.senior-2">高中 2 年级</option>
+                                    <option value="senior-3" data-i18n-key="grade.senior-3">高中 3 年级</option>
+                                    <option value="year-1" data-i18n-key="grade.year-1">Year 1</option>
+                                    <option value="year-2" data-i18n-key="grade.year-2">Year 2</option>
+                                    <option value="year-3" data-i18n-key="grade.year-3">Year 3</option>
+                                    <option value="year-4" data-i18n-key="grade.year-4">Year 4</option>
+                                    <option value="year-5" data-i18n-key="grade.year-5">Year 5</option>
+                                    <option value="year-6" data-i18n-key="grade.year-6">Year 6</option>
+                                    <option value="year-7" data-i18n-key="grade.year-7">Year 7</option>
+                                    <option value="year-8" data-i18n-key="grade.year-8">Year 8</option>
+                                    <option value="year-9" data-i18n-key="grade.year-9">Year 9</option>
+                                    <option value="year-10" data-i18n-key="grade.year-10">Year 10</option>
+                                    <option value="year-11" data-i18n-key="grade.year-11">Year 11</option>
+                                    <option value="year-12" data-i18n-key="grade.year-12">Year 12</option>
+                                    <option value="year-13" data-i18n-key="grade.year-13">Year 13</option>
+                                </select>
+                            </div>
+
+                            <!-- Subject Selection -->
+                            <div class="form-group">
+                                <label for="qg-subject" class="qg-subject-label" data-i18n-key="qg.subject-label">学科</label>
+                                <select id="qg-subject">
+                                    <option value="" class="qg-select-default" data-i18n-key="qg.select-default">-- 请选择 --</option>
+                                    <option value="math" data-i18n-key="subject.math">数学</option>
+                                    <option value="english" data-i18n-key="subject.english">英文</option>
+                                    <option value="science" data-i18n-key="subject.science">科学</option>
+                                    <option value="physics" data-i18n-key="subject.physics">物理</option>
+                                    <option value="chemistry" data-i18n-key="subject.chemistry">化学</option>
+                                    <option value="biology" data-i18n-key="subject.biology">生物</option>
+                                    <option value="history" data-i18n-key="subject.history">历史</option>
+                                    <option value="geography" data-i18n-key="subject.geography">地理</option>
+                                    <option value="languages" data-i18n-key="subject.languages">语言</option>
+                                    <option value="literature" data-i18n-key="subject.literature">文学</option>
+                                    <option value="economics" data-i18n-key="subject.economics">经济</option>
+                                    <option value="government" data-i18n-key="subject.government">政治/政府</option>
+                                    <option value="psychology" data-i18n-key="subject.psychology">心理学</option>
+                                    <option value="philosophy" data-i18n-key="subject.philosophy">哲学</option>
+                                    <option value="computer-science" data-i18n-key="subject.computer-science">计算机科学</option>
+                                    <option value="art" data-i18n-key="subject.art">美术</option>
+                                    <option value="music" data-i18n-key="subject.music">音乐</option>
+                                    <option value="drama" data-i18n-key="subject.drama">戏剧</option>
+                                    <option value="pe" data-i18n-key="subject.pe">体育</option>
+                                    <option value="statistics" data-i18n-key="subject.statistics">统计学</option>
+                                </select>
+                            </div>
+
+                            <!-- Difficulty Selection -->
+                            <div class="form-group">
+                                <label for="qg-difficulty" class="qg-difficulty-label" data-i18n-key="qg.difficulty-label">难度</label>
+                                <select id="qg-difficulty">
+                                    <option value="easy" class="qg-difficulty-easy" data-i18n-key="qg.difficulty-easy">基础级（适合初学者）</option>
+                                    <option value="intermediate" class="qg-difficulty-intermediate" data-i18n-key="qg.difficulty-intermediate">中等级（巩固基础）</option>
+                                    <option value="hard" class="qg-difficulty-hard" data-i18n-key="qg.difficulty-hard">进阶级（深度学习）</option>
+                                    <option value="expert" class="qg-difficulty-expert" data-i18n-key="qg.difficulty-expert">专家级（竞赛/考试）</option>
+                                </select>
+                            </div>
+
+                            <!-- Question Type Selection -->
+                            <div class="form-group">
+                                <label for="qg-question-type" class="qg-question-type-label" data-i18n-key="qg.question-type-label">题型</label>
+                                <select id="qg-question-type">
+                                    <option value="" class="qg-select-default" data-i18n-key="qg.select-default">-- 请选择 --</option>
+                                    <option value="多选题" class="qg-type-multiple" data-i18n-key="qg.type-multiple">多选题</option>
+                                    <option value="填空题" class="qg-type-fill" data-i18n-key="qg.type-fill">填空题</option>
+                                    <option value="简答题" class="qg-type-short" data-i18n-key="qg.type-short">简答题</option>
+                                    <option value="论述题" class="qg-type-essay" data-i18n-key="qg.type-essay">论述题</option>
+                                    <option value="计算题" class="qg-type-calc" data-i18n-key="qg.type-calc">计算题</option>
+                                    <option value="分析题" class="qg-type-analysis" data-i18n-key="qg.type-analysis">分析题</option>
+                                    <option value="混合题型" class="qg-type-mixed" data-i18n-key="qg.type-mixed">混合题型</option>
+                                </select>
+                            </div>
+
+                            <!-- Command Words Selection (Optional) -->
+                            <div class="form-group" id="command-words-group" style="display: none;">
+                                <label class="qg-command-words-label" data-i18n-key="qg.command-words-label">强调的能力要求</label>
+                                <p style="margin: 0 0 8px 0; color: #666; font-size: 12px;" data-i18n-key="qg.command-words-help">（可选）选择你的考试系统强调的能力</p>
+                                <div id="command-words-checkboxes" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                                <p id="command-words-disabled-msg" style="color: #999; font-size: 12px; margin-top: 8px; display: none;" data-i18n-key="qg.no-exam-selected">请先在用户设置中选择考试类型</p>
+                            </div>
+
+                            <!-- Question Quantity Selection -->
+                            <div class="form-group">
+                                <label for="qg-quantity" class="qg-quantity-label" data-i18n-key="qg.quantity-label">题目数量</label>
+                                <select id="qg-quantity">
+                                    <option value="1" class="qg-qty-1" data-i18n-key="qg.quantity-1">1 道</option>
+                                    <option value="2" class="qg-qty-2" data-i18n-key="qg.quantity-2">2 道</option>
+                                    <option value="3" selected class="qg-qty-3" data-i18n-key="qg.quantity-3">3 道</option>
+                                    <option value="5" class="qg-qty-5" data-i18n-key="qg.quantity-5">5 道</option>
+                                    <option value="10" class="qg-qty-10" data-i18n-key="qg.quantity-10">10 道</option>
+                                </select>
+                            </div>
+
+                            <!-- Generate Answer Toggle -->
+                            <div class="form-group">
+                                <label class="checkbox-label checkbox-large">
+                                    <input type="checkbox" id="qg-include-answer" checked> <span class="qg-include-answer-label" data-i18n-key="qg.include-answer-label">同时生成答案和解析</span>
+                                </label>
+                            </div>
+
+                            <!-- Text Input (Optional) -->
+                            <div class="form-group">
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <label for="question-input" class="qg-input-label" data-i18n-key="qg.input-label" style="margin-bottom: 0;">输入题目要求</label>
+                                    <span class="label-badge qg-input-optional" data-i18n-key="qg.placeholder-optional">可选 - 支持文本和语音</span>
+                                </div>
+                                <textarea id="question-input" placeholder="(可选) 您可以输入具体的题目要求来进一步定制..."></textarea>
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-qg-btn" data-i18n-key="qg.voice-input">🎤 语音输入</button>
+                                </div>
+                            </div>
+                            <button id="submit-text-btn" class="btn btn-primary qg-submit-btn" data-i18n-key="qg.submit">生成题目</button>
+                        </section>
+
+                        <!-- Output Section -->
+                        <section class="output-section">
+                            <!-- Questions Output -->
+                            <div style="margin-bottom: 30px;">
+                                <h2 class="qg-output-title" data-i18n-key="qg.output-title">AI 生成的题目</h2>
+                                <div style="position: relative;">
+                                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                        <button class="btn btn-small btn-speak" id="speak-qg-btn" onclick="window.app && window.app.speakText(document.getElementById('response-container').innerHTML, null, 'response-container')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                        <button class="btn btn-small btn-stop" id="stop-qg-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                    </div>
+                                    <div id="qg-performance-meter" style="display: none; margin: 15px 0; padding: 12px; background: #f0f8ff; border-left: 4px solid #2196F3; border-radius: 4px;">
+                                        <div style="font-weight: 500; font-size: 14px;">
+                                            <span data-i18n-key="qg.performance-label">绩效</span>:
+                                            <span id="qg-perf-percentage">0</span>%
+                                            (<span id="qg-perf-count">0/0</span> <span data-i18n-key="qg.performance-correct">正确</span>) |
+                                            <span data-i18n-key="qg.performance-current-level">当前难度</span>:
+                                            <span id="qg-current-difficulty" style="font-weight: bold; color: #2196F3;">中等级</span>
+                                        </div>
+                                        <div id="qg-difficulty-feedback" style="margin-top: 8px; font-size: 13px; color: #666; display: none;"></div>
+                                    </div>
+                                    <div id="response-container" class="response-container">
+                                        <p class="placeholder qg-waiting-placeholder" data-i18n-key="qg.waiting">等待输入...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Answers Output (shown only when include-answer is checked) -->
+                            <div id="answers-section" style="display: none; margin-bottom: 30px;">
+                                <h2 class="qg-answers-title" data-i18n-key="qg.answers-title">AI 生成解析</h2>
+                                <div style="position: relative;">
+                                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                        <button class="btn btn-small btn-speak" id="speak-answers-btn" onclick="window.app && window.app.speakText(document.getElementById('answers-container').innerHTML, null, 'answers-container')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                        <button class="btn btn-small btn-stop" id="stop-answers-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                    </div>
+                                    <div id="answers-container" class="response-container">
+                                        <p class="placeholder qg-answers-waiting" data-i18n-key="qg.answers-waiting">等待生成...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-small" id="save-qg-btn" style="margin-top: 15px; display: none;" data-i18n-key="btn.save">💾 保存</button>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 2: Answer Checker (智能批答案) -->
+                <div class="page-content" id="answer-checker">
+                    <div class="page-wrapper">
+                        <section class="input-section">
+                            <h2 data-i18n-key="ac.input-title">智能批答案</h2>
+
+                            <!-- Question Input -->
+                            <div class="form-group">
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <label for="answer-question" data-i18n-key="ac.question-label" style="margin-bottom: 0;">题目</label>
+                                    <span class="label-badge" data-i18n-key="ac.question-support">支持文本、语音、文件</span>
+                                </div>
+                                <textarea id="answer-question" placeholder="请输入题目..." data-i18n-key-placeholder="ac.question-placeholder"></textarea>
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-question-btn" data-i18n-key="ac.question-voice">🎤 题目语音</button>
+                                    <button class="btn btn-small btn-file" id="upload-question-btn" data-i18n-key="ac.question-file">📁 上传题目文件</button>
+                                    <input type="file" id="question-file-input" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+                                </div>
+                            </div>
+
+                            <!-- Student Answer Input -->
+                            <div class="form-group">
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <label for="answer-student" data-i18n-key="ac.answer-label" style="margin-bottom: 0;">学生答案</label>
+                                    <span class="label-badge" data-i18n-key="ac.answer-support">支持文本、语音、文件</span>
+                                </div>
+                                <textarea id="answer-student" placeholder="请输入学生的答案..." data-i18n-key-placeholder="ac.answer-placeholder"></textarea>
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-answer-btn" data-i18n-key="ac.answer-voice">🎤 答案语音</button>
+                                    <button class="btn btn-small btn-file" id="upload-answer-btn" data-i18n-key="ac.answer-file">📁 上传答案文件</button>
+                                    <input type="file" id="answer-file-input" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+                                </div>
+                            </div>
+
+                            <!-- Standard Answer Input (Optional) -->
+                            <div class="form-group">
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <label for="answer-standard" data-i18n-key="ac.standard-label" style="margin-bottom: 0;">标准答案</label>
+                                    <span class="label-badge optional" data-i18n-key="ac.standard-optional">可选 - 支持文本和语音</span>
+                                </div>
+                                <textarea id="answer-standard" placeholder="[可选] 请输入标准答案，留空则AI自主判断..." data-i18n-key-placeholder="ac.standard-placeholder"></textarea>
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-ac-standard-btn" data-i18n-key="qg.voice-input">🎤 语音输入</button>
+                                    <button class="btn btn-small btn-file" id="upload-standard-btn" data-i18n-key="ac.standard-file">📁 上传标准答案文件</button>
+                                    <input type="file" id="standard-file-input" accept=".txt,.pdf,.doc,.docx" style="display: none;">
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="app.submitAnswer()" data-i18n-key="ac.submit">提交批改</button>
+                        </section>
+
+                        <section class="output-section">
+                            <h2 data-i18n-key="ac.output-title">批改结果</h2>
+                            <div style="position: relative;">
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <button class="btn btn-small btn-speak" id="speak-ac-btn" onclick="window.app && window.app.speakText(document.getElementById('answer-result').innerHTML, null, 'answer-result')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                    <button class="btn btn-small btn-stop" id="stop-ac-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                </div>
+                                <div id="answer-result" class="response-container">
+                                    <p class="placeholder" data-i18n-key="ac.waiting">等待批改...</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-small" id="save-ac-btn" style="margin-top: 15px; display: none;" data-i18n-key="btn.save">💾 保存</button>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 4: Learning Plan (学习规划) -->
+                <div class="page-content" id="learning-plan">
+                    <div class="page-wrapper">
+                        <section class="input-section">
+                            <h2 data-i18n-key="lp.title">学习规划</h2>
+                            <div class="form-group">
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <label for="plan-goal" data-i18n-key="lp.goal-label" style="margin-bottom: 0;">学习目标</label>
+                                    <span class="label-badge" data-i18n-key="lp.goal-support">支持语音</span>
+                                </div>
+                                <input type="text" id="plan-goal" placeholder="例如：掌握高中数学...">
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-plan-goal-btn" data-i18n-key="lp.voice-input">🎤 语音输入</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-duration" data-i18n-key="lp.duration-label">学习周期</label>
+                                <select id="plan-duration">
+                                    <option value="1week" data-i18n-key="lp.duration.1week">1周</option>
+                                    <option value="1month" data-i18n-key="lp.duration.1month">1个月</option>
+                                    <option value="3month" data-i18n-key="lp.duration.3month">3个月</option>
+                                    <option value="6month" data-i18n-key="lp.duration.6month">6个月</option>
+                                    <option value="1year" data-i18n-key="lp.duration.1year">1年</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-current-level" data-i18n-key="lp.level-label">当前水平</label>
+                                <select id="plan-current-level">
+                                    <option value="beginner" data-i18n-key="lp.beginner">初级</option>
+                                    <option value="intermediate" data-i18n-key="lp.intermediate">中级</option>
+                                    <option value="advanced" data-i18n-key="lp.advanced">高级</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="plan-syllabus-file" data-i18n-key="lp.syllabus-label">课程大纲/学习清单（可选）</label>
+                                <p style="margin: 0 0 8px 0; color: #666; font-size: 12px;" data-i18n-key="lp.syllabus-help">上传学校的教学大纲、课程表或学习清单，帮助AI更好地理解你的学习需求</p>
+                                <input type="file" id="plan-syllabus-file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg" style="display: none;">
+                                <button class="btn btn-small" id="plan-upload-btn" onclick="document.getElementById('plan-syllabus-file').click();" style="background-color: #9C27B0; color: white;" data-i18n-key="lp.upload-btn">📎 选择文件</button>
+                                <span id="plan-file-name" style="margin-left: 10px; color: #666; font-size: 13px;"></span>
+                                <button class="btn btn-small" id="plan-clear-file-btn" onclick="window.app && window.app.clearUploadedFile('plan')" style="background-color: #f44336; color: white; margin-left: 10px; display: none;" data-i18n-key="lp.file-clear-btn">✕ 清除</button>
+                            </div>
+                            <button class="btn btn-primary" onclick="app.submitLearningPlan()" data-i18n-key="lp.submit">生成学习规划</button>
+                        </section>
+
+                        <section class="output-section">
+                            <h2 data-i18n-key="lp.output-title">个性化学习规划</h2>
+                            <div id="plan-result" class="response-container">
+                                <p class="placeholder" data-i18n-key="lp.waiting">等待生成学习规划...</p>
+                            </div>
+
+                            <!-- Learning Plan Three-Part Display with Accordion -->
+                            <div id="plan-sections" style="display: none;">
+                                <!-- Part 1: Overall Opinion -->
+                                <div class="plan-section-accordion plan-section-opinion-bg">
+                                    <div class="plan-section-header" onclick="window.app && window.app.togglePlanSection(0)">
+                                        <span class="plan-section-title" data-i18n-key="page.plan-opinion-title">💡 整体学习意见</span>
+                                        <span class="plan-section-toggle">▶</span>
+                                        <div class="plan-section-header-buttons">
+                                            <button class="btn-plan-speak btn-speak-opinion" onclick="event.stopPropagation(); window.app && window.app.speakLearningPlan(0)" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                            <button class="btn-plan-stop btn-stop-opinion" onclick="event.stopPropagation(); window.app && window.app.stopSpeaking()" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                        </div>
+                                    </div>
+                                    <div id="plan-opinion" class="plan-section-content plan-section-collapsed">
+                                    </div>
+                                </div>
+
+                                <!-- Part 2: Recommended Learning Methods -->
+                                <div class="plan-section-accordion plan-section-resources-bg">
+                                    <div class="plan-section-header" onclick="window.app && window.app.togglePlanSection(1)">
+                                        <span class="plan-section-title" data-i18n-key="page.plan-methods-title">💡 推荐学习方法</span>
+                                        <span class="plan-section-toggle">▶</span>
+                                        <div class="plan-section-header-buttons">
+                                            <button class="btn-plan-speak btn-speak-resources" onclick="event.stopPropagation(); window.app && window.app.speakLearningPlan(1)" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                            <button class="btn-plan-stop btn-stop-resources" onclick="event.stopPropagation(); window.app && window.app.stopSpeaking()" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                        </div>
+                                    </div>
+                                    <div id="plan-resources" class="plan-section-content plan-section-collapsed">
+                                    </div>
+                                </div>
+
+                                <!-- Part 3: Time Schedule -->
+                                <div class="plan-section-accordion plan-section-schedule-bg">
+                                    <div class="plan-section-header" onclick="window.app && window.app.togglePlanSection(2)">
+                                        <span class="plan-section-title" data-i18n-key="page.plan-schedule-title">📅 详细时间计划表</span>
+                                        <span class="plan-section-toggle">▶</span>
+                                        <div class="plan-section-header-buttons">
+                                            <button class="btn-plan-speak btn-speak-schedule" onclick="event.stopPropagation(); window.app && window.app.speakLearningPlan(2)" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                            <button class="btn-plan-stop btn-stop-schedule" onclick="event.stopPropagation(); window.app && window.app.stopSpeaking()" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                        </div>
+                                    </div>
+                                    <div id="plan-schedule" class="plan-section-content plan-section-collapsed">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-small" id="save-lp-btn" style="margin-top: 15px; display: none;" data-i18n-key="btn.save">💾 保存</button>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 5: AI Chat (AI互动) -->
+                <div class="page-content" id="ai-chat">
+                    <div class="chat-container">
+                        <!-- Left: Input Section -->
+                        <section class="chat-input-panel">
+                            <h3 style="margin-bottom: 15px;" data-i18n-key="ai-chat.templates">快速模版</h3>
+                            <!-- Quick Templates -->
+                            <div class="template-buttons" style="margin-bottom: 30px;">
+                                <button class="template-btn" data-template="concept" onclick="app.selectChatTemplate('concept')">📖 概念解释</button>
+                                <button class="template-btn" data-template="analysis" onclick="app.selectChatTemplate('analysis')">🔍 题目解析</button>
+                                <button class="template-btn" data-template="advice" onclick="app.selectChatTemplate('advice')">💡 学习建议</button>
+                                <button class="template-btn" data-template="breakthrough" onclick="app.selectChatTemplate('breakthrough')">⚡ 难点突破</button>
+                                <button class="template-btn" data-template="extend" onclick="app.selectChatTemplate('extend')">🚀 知识拓展</button>
+                                <button class="template-btn" data-template="summary" onclick="app.selectChatTemplate('summary')">📝 复习总结</button>
+                            </div>
+
+                            <!-- Suggested Follow-up Questions -->
+                            <div id="suggested-questions-container" class="suggested-questions-container" style="display: none; margin-bottom: 30px;">
+                                <h3 style="margin-bottom: 12px; font-size: 14px; color: #666;">💡 推荐继续提问</h3>
+                                <div id="suggested-questions-list" class="suggested-questions-list">
+                                    <!-- Suggested questions will be dynamically inserted here -->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="chat-input">
+                                    您的问题
+                                    <span class="label-badge" data-i18n-key="ac.question-support">支持文本、语音、文件</span>
+                                </label>
+                                <textarea id="chat-input" placeholder="输入您想要讨论的学习问题..." data-i18n-key-placeholder="ai-chat.input-placeholder" style="min-height: 80px;"></textarea>
+                                <div class="input-controls">
+                                    <button class="btn btn-small btn-voice" id="record-chat-btn" data-i18n-key="qg.voice-input">🎤 语音输入</button>
+                                    <button class="btn btn-small btn-file" id="upload-chat-file-btn" data-i18n-key="ai-chat.upload-file">📁 上传文件</button>
+                                    <input type="file" id="chat-file-input" accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif" style="display: none;">
+                                </div>
+                                <div id="chat-file-info" style="margin-top: 8px; font-size: 12px; color: #666; display: none;">
+                                    📎 已上传文件：<span id="chat-file-name"></span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button class="btn btn-primary" id="chat-submit-btn" type="button">📤 发送</button>
+                                <button class="btn btn-secondary" id="chat-clear-btn" type="button">🗑️ 清空</button>
+                            </div>
+                        </section>
+
+                        <!-- Right: Chat History Display -->
+                        <section class="chat-display-panel">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                <button class="btn btn-small btn-speak" id="speak-chat-btn" onclick="window.app && window.app.speakText(document.getElementById('chat-messages').innerHTML, null, 'chat-messages')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                <button class="btn btn-small" id="save-chat-btn" style="display: none;" data-i18n-key="btn.save">💾 保存</button>
+                            </div>
+                            <div id="chat-messages" class="chat-messages">
+                                <div class="chat-empty-message">开始与AI进行讨论</div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 5.5: Plan Manager (学习计划) -->
+                <div class="page-content" id="plan-manager">
+                    <div class="plan-manager-container">
+                        <!-- Left: Create/Edit Plan Section -->
+                        <section class="plan-create-section">
+                            <div class="plan-section-header">
+                                <h2 id="plan-create-title" data-i18n-key="page.plan-create-title">创建学习计划</h2>
+                                <button class="btn btn-small" id="plan-close-form-btn" style="display: none; background-color: #999; color: white;" onclick="window.app && window.app.closePlanForm()">✕ 取消</button>
+                            </div>
+
+                            <form id="plan-form" onsubmit="event.preventDefault(); window.app && window.app.savePlan(); return false;">
+                                <!-- Plan Name -->
+                                <div class="form-group">
+                                    <label for="plan-name" data-i18n-key="pm.plan-name">计划名称</label>
+                                    <input type="text" id="plan-name" placeholder="例如：数学每日练习" data-i18n-key-placeholder="pm.plan-name-placeholder" required>
+                                </div>
+
+                                <!-- Plan Description -->
+                                <div class="form-group">
+                                    <label for="plan-description" data-i18n-key="pm.plan-description">计划描述</label>
+                                    <textarea id="plan-description" placeholder="计划的详细描述（可选）" data-i18n-key-placeholder="pm.plan-desc-placeholder" style="min-height: 80px;"></textarea>
+                                </div>
+
+                                <!-- Target Quantity -->
+                                <div class="form-group">
+                                    <label for="plan-target" data-i18n-key="pm.weekly-target">周学习目标数量</label>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="number" id="plan-target" value="5" min="1" max="100" style="width: 80px;">
+                                        <span id="plan-target-unit" data-i18n-key="pm.target-unit">道题目</span>
+                                    </div>
+                                </div>
+
+                                <!-- Schedule Type -->
+                                <div class="form-group">
+                                    <label id="plan-schedule-label" data-i18n-key="pm.schedule-label">学习时间安排</label>
+                                    <select id="plan-schedule-type" onchange="window.app && window.app.updateScheduleUI();">
+                                        <option value="daily" data-i18n-key="pm.schedule-daily">每日固定时间</option>
+                                        <option value="weekly" data-i18n-key="pm.schedule-weekly">周计划（选择每周的几天）</option>
+                                    </select>
+                                </div>
+
+                                <!-- Daily Time -->
+                                <div class="form-group" id="plan-daily-time-group">
+                                    <label for="plan-daily-time" data-i18n-key="pm.daily-time">每日学习时间</label>
+                                    <input type="time" id="plan-daily-time" value="14:00">
+                                    <small style="color: #666; margin-top: 5px; display: block;" data-i18n-key="pm.time-reminder">系统会在该时间发送提醒</small>
+                                </div>
+
+                                <!-- Weekly Selection -->
+                                <div class="form-group" id="plan-weekly-group" style="display: none;">
+                                    <label id="plan-weekly-label" data-i18n-key="pm.select-days">选择学习的日期</label>
+                                    <div class="weekday-buttons">
+                                        <button type="button" class="weekday-btn" data-day="0" onclick="window.app && window.app.toggleWeekday(0);">
+                                            <span class="weekday-text" data-i18n-key="pm.mon">周一</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="1" onclick="window.app && window.app.toggleWeekday(1);">
+                                            <span class="weekday-text" data-i18n-key="pm.tue">周二</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="2" onclick="window.app && window.app.toggleWeekday(2);">
+                                            <span class="weekday-text" data-i18n-key="pm.wed">周三</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="3" onclick="window.app && window.app.toggleWeekday(3);">
+                                            <span class="weekday-text" data-i18n-key="pm.thu">周四</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="4" onclick="window.app && window.app.toggleWeekday(4);">
+                                            <span class="weekday-text" data-i18n-key="pm.fri">周五</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="5" onclick="window.app && window.app.toggleWeekday(5);">
+                                            <span class="weekday-text" data-i18n-key="pm.sat">周六</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                        <button type="button" class="weekday-btn" data-day="6" onclick="window.app && window.app.toggleWeekday(6);">
+                                            <span class="weekday-text" data-i18n-key="pm.sun">周日</span>
+                                            <span class="weekday-time"></span>
+                                        </button>
+                                    </div>
+                                    <div style="margin-top: 12px;">
+                                        <label for="plan-weekly-time" data-i18n-key="pm.learning-time">学习时间</label>
+                                        <input type="time" id="plan-weekly-time" value="14:00">
+                                    </div>
+                                </div>
+
+                                <!-- Duration -->
+                                <div class="form-group">
+                                    <label for="plan-duration" data-i18n-key="pm.estimated-duration">预计学习时长</label>
+                                    <select id="plan-duration">
+                                        <option value="15" data-i18n-key="pm.duration-15">15 分钟</option>
+                                        <option value="30" selected data-i18n-key="pm.duration-30">30 分钟</option>
+                                        <option value="45" data-i18n-key="pm.duration-45">45 分钟</option>
+                                        <option value="60" data-i18n-key="pm.duration-60">1 小时</option>
+                                        <option value="90" data-i18n-key="pm.duration-90">1.5 小时</option>
+                                        <option value="120" data-i18n-key="pm.duration-120">2 小时</option>
+                                    </select>
+                                </div>
+
+                                <!-- Active Status -->
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="plan-active" checked>
+                                        <span id="plan-active-label" data-i18n-key="pm.enable-plan">启用此计划</span>
+                                    </label>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                                    <button type="submit" class="btn btn-primary" id="plan-submit-btn" data-i18n-key="pm.save-plan">💾 保存计划</button>
+                                    <button type="button" class="btn btn-secondary" id="plan-delete-btn" style="display: none; background-color: #f44336; color: white;" onclick="window.app && window.app.deletePlan()" data-i18n-key="pm.delete-plan">🗑️ 删除</button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <!-- Right: Plans List & Statistics -->
+                        <section class="plan-list-section">
+                            <!-- Statistics -->
+                            <div class="plan-statistics">
+                                <div class="stat-card">
+                                    <div class="stat-label" id="stat-active-plans" data-i18n-key="pm.active-plans">活跃计划</div>
+                                    <div class="stat-value" id="stat-active-count">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label" id="stat-week-target" data-i18n-key="pm.week-target">本周目标</div>
+                                    <div class="stat-value" id="stat-week-total">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label" id="stat-week-completed" data-i18n-key="pm.week-completed">本周完成</div>
+                                    <div class="stat-value" id="stat-week-completed-count">0</div>
+                                </div>
+                            </div>
+
+                            <!-- Plans List -->
+                            <div class="plan-list-header">
+                                <h3 id="plan-list-title" data-i18n-key="page.plan-list-title">我的学习计划</h3>
+                                <button class="btn btn-small btn-primary" id="plan-add-btn" onclick="window.app && window.app.openNewPlanForm()" data-i18n-key="pm.add-new">➕ 新建</button>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <button class="btn btn-small btn-speak" id="speak-plan-list-btn" onclick="window.app && window.app.speakText(document.getElementById('plan-list-container').innerHTML, null, 'plan-list-container')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                <button class="btn btn-small btn-stop" id="stop-plan-list-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                            </div>
+
+                            <div id="plan-list-container" class="plan-list-container">
+                                <p class="plan-empty-message" id="plan-empty-msg" data-i18n-key="page.plan-empty-msg">暂无学习计划</p>
+                            </div>
+
+                            <!-- Weekly Calendar View -->
+                            <div style="margin-top: 30px;">
+                                <h3 id="plan-calendar-title" data-i18n-key="pm.weekly-schedule">本周安排</h3>
+                                <div id="plan-calendar" class="plan-calendar">
+                                    <!-- Calendar will be generated by JS -->
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 6: Progress (学习进度) -->
+                <div class="page-content" id="progress">
+                    <div class="progress-main-container">
+                        <!-- Left Column: Progress Cards -->
+                        <div class="progress-left-column">
+                            <section class="progress-left-section">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h2 id="progress-title">学习进度</h2>
+                                        <p class="settings-description" id="progress-subtitle">查看您的学习覆盖范围和进度统计</p>
+                                    </div>
+                                    <button class="btn btn-small" id="clear-progress-btn" style="background-color: #f44336; color: white; display: none;" onclick="window.app && window.app.clearProgressData()"><span id="clear-btn-text">🗑 清空</span></button>
+                                </div>
+
+                                <div id="progress-stats" class="progress-stats" style="display: none;">
+                                    <div class="stat-card">
+                                        <div class="stat-label" id="stat-label-1">总活动数</div>
+                                        <div class="stat-value" id="total-activities">0</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-label" id="stat-label-2">涵盖科目数</div>
+                                        <div class="stat-value" id="total-subjects">0</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-label" id="stat-label-3">最后活动</div>
+                                        <div class="stat-value" id="last-activity-time" style="font-size: 12px;">-</div>
+                                    </div>
+                                </div>
+
+                                <div id="progress-cards-container" class="progress-cards-container">
+                                    <p class="progress-empty-message" style="padding: 40px; text-align: center; color: #999;">
+                                        暂无学习活动。开始生成题目、批改答案或进行AI互动来开始追踪您的学习进度。
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Right Column: AI Analysis Panel -->
+                        <div class="progress-right-column">
+                            <section class="ai-analysis-panel">
+                                <div class="ai-analysis-header">
+                                    <h3 id="ai-analysis-header" data-i18n-key="progress.ai-analysis-title">🤖 AI 学习分析</h3>
+                                </div>
+
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <button class="btn btn-small btn-speak" id="speak-analysis-btn" onclick="window.app && window.app.speakText(document.getElementById('ai-analysis-content').innerHTML, null, 'ai-analysis-content')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                                    <button class="btn btn-small btn-stop" id="stop-analysis-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                                </div>
+
+                                <div id="ai-analysis-content" class="ai-analysis-content">
+                                    <p style="text-align: center; color: #999; padding: 40px 20px;" id="ai-analysis-empty-msg" data-i18n-key="progress.ai-analysis-empty">
+                                        完成至少一次活动后，AI 将为您分析学习进度
+                                    </p>
+                                </div>
+
+                                <button id="ai-analysis-btn" class="ai-analysis-btn" style="display: none;" data-i18n-key="progress.generate-ai-analysis">
+                                    <span id="ai-analysis-btn-text">✨ 生成 AI 分析</span>
+                                </button>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 7: History (历史记录) -->
+                <div class="page-content" id="history">
+                    <div class="settings-container">
+                        <section class="settings-section">
+                            <h2 id="history-title" data-i18n-key="history.title">历史记录</h2>
+                            <p class="settings-description" id="history-subtitle" data-i18n-key="history.subtitle">您保存的所有内容</p>
+
+                            <div class="settings-actions">
+                                <button class="btn btn-primary" id="history-clear-btn">🗑️ 清空所有</button>
+                            </div>
+
+                            <div id="history-list" class="history-list">
+                                <p class="history-empty-message">暂无保存记录</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Page 7: Learning Settings (学习设置) -->
+                <div class="page-content" id="learning-settings">
+                    <div class="settings-container">
+                        <h2 data-i18n-key="page.learning-settings-title">学习设置</h2>
+                        <p class="settings-description" data-i18n-key="page.learning-settings-desc">配置您的学习偏好，帮助 AI 系统更准确地理解您的需求</p>
+
+                        <!-- Study Settings -->
+                        <section class="settings-section">
+                            <div class="section-header">
+                                <h3 class="section-title" data-i18n-key="settings.learning-section-title">📚 学习设置</h3>
+                                <p class="section-subtitle" data-i18n-key="settings.learning-section-subtitle">配置您的学习相关偏好</p>
+                            </div>
+
+                            <!-- Education Level Settings -->
+                            <div class="settings-group" data-i18n-group="settings.education-level-group">
+                                <h4 data-i18n-key="settings.education-level">教育水平</h4>
+                                <div class="form-group">
+                                    <label for="settings-grade" data-i18n-key="settings.grade">当前年级/水平</label>
+                                    <select id="settings-grade">
+                                        <option value="" data-i18n-key="qg.select-default">-- 请选择 --</option>
+                                        <option value="primary-1" data-i18n-key="grade.primary-1">小学 1 年级</option>
+                                        <option value="primary-2" data-i18n-key="grade.primary-2">小学 2 年级</option>
+                                        <option value="primary-3" data-i18n-key="grade.primary-3">小学 3 年级</option>
+                                        <option value="primary-4" data-i18n-key="grade.primary-4">小学 4 年级</option>
+                                        <option value="primary-5" data-i18n-key="grade.primary-5">小学 5 年级</option>
+                                        <option value="primary-6" data-i18n-key="grade.primary-6">小学 6 年级</option>
+                                        <option value="junior-1" data-i18n-key="grade.junior-1">初中 1 年级</option>
+                                        <option value="junior-2" data-i18n-key="grade.junior-2">初中 2 年级</option>
+                                        <option value="junior-3" data-i18n-key="grade.junior-3">初中 3 年级</option>
+                                        <option value="senior-1" data-i18n-key="grade.senior-1">高中 1 年级</option>
+                                        <option value="senior-2" data-i18n-key="grade.senior-2">高中 2 年级</option>
+                                        <option value="senior-3" data-i18n-key="grade.senior-3">高中 3 年级</option>
+                                        <option value="year-1" data-i18n-key="grade.year-1">Year 1</option>
+                                        <option value="year-2" data-i18n-key="grade.year-2">Year 2</option>
+                                        <option value="year-3" data-i18n-key="grade.year-3">Year 3</option>
+                                        <option value="year-4" data-i18n-key="grade.year-4">Year 4</option>
+                                        <option value="year-5" data-i18n-key="grade.year-5">Year 5</option>
+                                        <option value="year-6" data-i18n-key="grade.year-6">Year 6</option>
+                                        <option value="year-7" data-i18n-key="grade.year-7">Year 7</option>
+                                        <option value="year-8" data-i18n-key="grade.year-8">Year 8</option>
+                                        <option value="year-9" data-i18n-key="grade.year-9">Year 9</option>
+                                        <option value="year-10" data-i18n-key="grade.year-10">Year 10</option>
+                                        <option value="year-11" data-i18n-key="grade.year-11">Year 11</option>
+                                        <option value="year-12" data-i18n-key="grade.year-12">Year 12</option>
+                                        <option value="year-13" data-i18n-key="grade.year-13">Year 13</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Exam Type Settings -->
+                            <div class="settings-group" data-i18n-group="settings.exam-type-group">
+                                <h4 data-i18n-key="settings.exam-type">考试类型</h4>
+                                <div class="form-group">
+                                    <label for="settings-exam-type" data-i18n-key="settings.exam-system">请选择你主要参加的考试</label>
+                                    <select id="settings-exam-type">
+                                        <option value="" data-i18n-key="qg.select-default">-- 请选择 --</option>
+                                        <option value="gaokao" data-i18n-key="exam.gaokao">高考（中国）</option>
+                                        <option value="igcse" data-i18n-key="exam.igcse">IGCSE（剑桥国际通用中等教育证书）</option>
+                                        <option value="a-level" data-i18n-key="exam.a-level">A-Level（英国高中）</option>
+                                        <option value="ib" data-i18n-key="exam.ib">IB（国际文凭）</option>
+                                        <option value="sat" data-i18n-key="exam.sat">SAT（美国大学入学考试）</option>
+                                        <option value="act" data-i18n-key="exam.act">ACT（美国大学入学考试）</option>
+                                        <option value="ap" data-i18n-key="exam.ap">AP（美国先修课程考试）</option>
+                                        <option value="amc" data-i18n-key="exam.amc">AMC（美国数学竞赛）</option>
+                                        <option value="other" data-i18n-key="exam.other">其他考试</option>
+                                        <option value="none" data-i18n-key="exam.none">暂无参加考试</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Subject Preference Settings -->
+                            <div class="settings-group" data-i18n-group="settings.subjects-group">
+                                <h4 data-i18n-key="settings.subjects">主要学科</h4>
+                                <div class="form-group">
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label" data-i18n-key="subject.math">
+                                            <input type="checkbox" name="subject" value="math"> 数学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.english">
+                                            <input type="checkbox" name="subject" value="english"> 英文
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.science">
+                                            <input type="checkbox" name="subject" value="science"> 科学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.physics">
+                                            <input type="checkbox" name="subject" value="physics"> 物理
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.chemistry">
+                                            <input type="checkbox" name="subject" value="chemistry"> 化学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.biology">
+                                            <input type="checkbox" name="subject" value="biology"> 生物
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.history">
+                                            <input type="checkbox" name="subject" value="history"> 历史
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.geography">
+                                            <input type="checkbox" name="subject" value="geography"> 地理
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.languages">
+                                            <input type="checkbox" name="subject" value="languages"> 语言
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.literature">
+                                            <input type="checkbox" name="subject" value="literature"> 文学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.economics">
+                                            <input type="checkbox" name="subject" value="economics"> 经济
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.government">
+                                            <input type="checkbox" name="subject" value="government"> 政治/政府
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.psychology">
+                                            <input type="checkbox" name="subject" value="psychology"> 心理学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.philosophy">
+                                            <input type="checkbox" name="subject" value="philosophy"> 哲学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.computer-science">
+                                            <input type="checkbox" name="subject" value="computer-science"> 计算机科学
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.art">
+                                            <input type="checkbox" name="subject" value="art"> 美术
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.music">
+                                            <input type="checkbox" name="subject" value="music"> 音乐
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.drama">
+                                            <input type="checkbox" name="subject" value="drama"> 戏剧
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.pe">
+                                            <input type="checkbox" name="subject" value="pe"> 体育
+                                        </label>
+                                        <label class="checkbox-label" data-i18n-key="subject.statistics">
+                                            <input type="checkbox" name="subject" value="statistics"> 统计学
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Learning Style Settings -->
+                            <div class="settings-group" data-i18n-group="settings.learning-style-group">
+                                <h4 data-i18n-key="settings.learning-style">学习风格偏好</h4>
+                                <div class="form-group">
+                                    <div class="radio-group">
+                                        <label class="radio-label" data-i18n-key="settings.style-detailed">
+                                            <input type="radio" name="learning-style" value="detailed"> 详细讲解（适合打基础）
+                                        </label>
+                                        <label class="radio-label" data-i18n-key="settings.style-concise">
+                                            <input type="radio" name="learning-style" value="concise"> 精简概括（快速了解）
+                                        </label>
+                                        <label class="radio-label" data-i18n-key="settings.style-interactive">
+                                            <input type="radio" name="learning-style" value="interactive"> 互动式（问答和讨论）
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Custom Learning Style Description -->
+                            <div class="settings-group" data-i18n-group="settings.custom-learning-style-group">
+                                <h4 data-i18n-key="settings.custom-learning-style">📝 个性化学习风格描述</h4>
+                                <p style="color: #666; font-size: 13px; margin-bottom: 12px;" data-i18n-key="settings.custom-learning-style-help">
+                                    用文字或语音描述您的学习方式、偏好和特点。AI 将基于这些信息生成更符合您需求的内容。
+                                </p>
+
+                                <div class="form-group">
+                                    <label for="settings-learning-style-description" data-i18n-key="settings.learning-style-description">学习风格描述（文本）</label>
+                                    <textarea id="settings-learning-style-description"
+                                        data-i18n-placeholder="settings.learning-style-placeholder"
+                                        placeholder="例如：我是视觉学习者，更容易通过图表和例子理解。我喜欢实际应用而不是纯理论..."
+                                        style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: Arial, sans-serif; font-size: 13px; resize: vertical;"></textarea>
+                                </div>
+
+                                <div class="form-group" style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                                    <button id="settings-learning-style-voice-btn"
+                                        data-i18n-key="settings.voice-input-btn"
+                                        style="flex: 0 0 auto; background-color: #FFC107; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                                        🎤 语音输入
+                                    </button>
+                                    <button id="settings-learning-style-clear-voice-btn"
+                                        data-i18n-key="settings.clear-voice-btn"
+                                        style="flex: 0 0 auto; background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; display: none;">
+                                        ❌ 清除语音
+                                    </button>
+                                    <span id="settings-learning-style-voice-status" data-i18n-key="settings.voice-not-recorded" style="color: #666; font-size: 13px;">未录制</span>
+                                </div>
+                            </div>
+
+                            <!-- Difficulty Level Settings -->
+                            <div class="settings-group" data-i18n-group="settings.difficulty-group">
+                                <h4 data-i18n-key="settings.difficulty">难度偏好</h4>
+                                <div class="form-group">
+                                    <select id="settings-difficulty">
+                                        <option value="easy" data-i18n-key="difficulty.easy">基础级（适合初学者）</option>
+                                        <option value="intermediate" data-i18n-key="difficulty.intermediate">中等级（巩固基础）</option>
+                                        <option value="hard" data-i18n-key="difficulty.hard">进阶级（深度学习）</option>
+                                        <option value="expert" data-i18n-key="difficulty.expert">专家级（竞赛/考试）</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Study Other Preferences -->
+                            <div class="settings-group" data-i18n-group="settings.other-preferences-group">
+                                <h4 data-i18n-key="settings.other-preferences">其他学习偏好</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large" data-i18n-key="settings.include-solutions">
+                                        <input type="checkbox" id="settings-include-solutions"> 生成题目时包含详细解答
+                                    </label>
+                                    <label class="checkbox-label checkbox-large" data-i18n-key="settings.include-analysis">
+                                        <input type="checkbox" id="settings-include-analysis"> 批改答案时包含深度分析
+                                    </label>
+                                    <label class="checkbox-label checkbox-large" data-i18n-key="settings.use-context">
+                                        <input type="checkbox" id="settings-use-context"> 利用我的学习背景（更准确的推荐）
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Save and Reset Buttons -->
+                        <div class="settings-actions">
+                            <button class="btn btn-primary" onclick="window.app && window.app.saveSettings()" data-i18n-key="settings.save">💾 保存设置</button>
+                            <button class="btn btn-secondary" onclick="window.app && window.app.resetSettings()" data-i18n-key="settings.reset">🔄 重置为默认</button>
+                            <button class="btn btn-small" style="background-color: #1565C0; color: white;" onclick="window.app && window.app.exportSettings()" data-i18n-key="settings.export">📥 导出设置</button>
+                        </div>
+
+                        <!-- Status Message -->
+                        <div id="settings-message" class="settings-message"></div>
+                    </div>
+                </div>
+
+                <!-- Page 8: User Settings (用户设置) -->
+                <div class="page-content" id="user-settings">
+                    <div class="settings-container">
+                        <h2 data-i18n-key="page.user-settings-title">用户设置</h2>
+                        <p class="settings-description" data-i18n-key="page.user-settings-desc">自定义用户界面和显示选项</p>
+
+                        <!-- Language Settings -->
+                        <section class="settings-section">
+                            <div class="settings-group" data-i18n-group="settings.language-group">
+                                <h4 data-i18n-key="settings.language">语言设置</h4>
+                                <div class="form-group">
+                                    <label for="settings-language" data-i18n-key="settings.select-language">选择主要使用语言</label>
+                                    <select id="settings-language">
+                                        <option value="chinese">中文</option>
+                                        <option value="english" selected>English（英文）</option>
+                                        <option value="spanish">Español（西班牙语）</option>
+                                        <option value="french">Français（法文）</option>
+                                        <option value="german">Deutsch（德文）</option>
+                                        <option value="japanese">日本語（日文）</option>
+                                        <option value="korean">한국어（韩文）</option>
+                                        <option value="portuguese">Português（葡萄牙语）</option>
+                                    </select>
+                                </div>
+
+                                <!-- Custom Language Option -->
+                                <div class="form-group">
+                                    <label for="custom-language-input" data-i18n-key="settings.custom-language">或输入其他语言名称</label>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="text" id="custom-language-input" placeholder="例如：越南语、Vietnamese、Tiếng Việt" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <button id="custom-language-btn" data-i18n-key="settings.translate-button" style="padding: 8px 16px; background-color: #1565C0; color: white; border: none; border-radius: 4px; cursor: pointer;">翻译</button>
+                                    </div>
+                                    <div id="custom-language-status" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Font Size Settings -->
+                            <div class="settings-group" data-i18n-group="settings.font-size-group">
+                                <h4 data-i18n-key="settings.font-size">字体大小</h4>
+                                <div class="form-group">
+                                    <label data-i18n-key="settings.adjust-font-size">调整文字大小</label>
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                                        <input type="range" id="settings-font-size" min="80" max="150" value="100" step="1" style="flex: 1; cursor: pointer;">
+                                        <span style="font-weight: 600; color: var(--primary-color); min-width: 45px; text-align: right;" id="font-size-display">100</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dyslexia-Friendly Font -->
+                            <div class="settings-group" data-i18n-group="settings.dyslexia-font-group">
+                                <h4 data-i18n-key="settings.dyslexia-font">便于阅读的字体</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large" data-i18n-key="settings.dyslexia-font-label">
+                                        <input type="checkbox" id="settings-dyslexia-font"> 启用易读字体（针对阅读困难进行优化）
+                                    </label>
+                                    <p style="font-size: 0.9rem; color: #666; margin-top: 8px;" data-i18n-key="settings.dyslexia-font-help">✓ 这种字体设计有助于减少阅读困难用户的困扰</p>
+                                </div>
+                            </div>
+
+                            <!-- High Contrast Mode -->
+                            <div class="settings-group" data-i18n-group="settings.high-contrast-group">
+                                <h4 data-i18n-key="settings.high-contrast">高对比度模式</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large" data-i18n-key="settings.high-contrast-label">
+                                        <input type="checkbox" id="settings-high-contrast"> 启用高对比度模式（改善可读性）
+                                    </label>
+                                    <p style="font-size: 0.9rem; color: #666; margin-top: 8px;" data-i18n-key="settings.high-contrast-help">♿ 更深的文字颜色和更鲜明的背景对比</p>
+                                </div>
+                            </div>
+
+                            <!-- Line Spacing -->
+                            <div class="settings-group" data-i18n-group="settings.line-spacing-group">
+                                <h4 data-i18n-key="settings.line-spacing">行间距</h4>
+                                <div class="form-group">
+                                    <label data-i18n-key="settings.line-spacing-label">调整文字行间距</label>
+                                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="line-spacing" value="compact"> <span data-i18n-key="settings.spacing-compact">紧凑</span>
+                                        </label>
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="line-spacing" value="normal" checked> <span data-i18n-key="settings.spacing-normal">标准</span>
+                                        </label>
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="line-spacing" value="relaxed"> <span data-i18n-key="settings.spacing-relaxed">宽松</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dark Mode -->
+                            <div class="settings-group" data-i18n-group="settings.dark-mode-group">
+                                <h4 data-i18n-key="settings.dark-mode">主题</h4>
+                                <div class="form-group">
+                                    <div style="display: flex; gap: 10px;">
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="theme" value="light" checked> <span data-i18n-key="settings.theme-light">☀️ 浅色</span>
+                                        </label>
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="theme" value="dark"> <span data-i18n-key="settings.theme-dark">🌙 深色</span>
+                                        </label>
+                                        <label class="radio-label" style="flex: 1;">
+                                            <input type="radio" name="theme" value="auto"> <span data-i18n-key="settings.theme-auto">🔄 自动</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Accessibility Settings Section -->
+                        <section class="settings-section">
+                            <div class="section-header">
+                                <h3 class="section-title" data-i18n-key="accessibility.title">♿ 无障碍设置</h3>
+                                <p class="section-subtitle" data-i18n-key="accessibility.subtitle">为运动障碍用户优化的快捷键和操作系统（可选）</p>
+                            </div>
+
+                            <!-- Enable Accessibility Mode -->
+                            <div class="settings-group">
+                                <h4 data-i18n-key="accessibility.enable">启用无障碍系统</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="accessibility-mode"> <span data-i18n-key="accessibility.enable-desc">为运动障碍用户优化的快捷键和界面</span>
+                                    </label>
+                                    <p style="font-size: 0.9rem; color: #666; margin-top: 8px;" data-i18n-key="accessibility.mode-note">💡 启用此模式后，您可以使用上下方向键快速导航页面</p>
+                                </div>
+                            </div>
+
+                            <!-- Interface Navigation Shortcuts -->
+                            <div class="settings-group" id="accessibility-nav-group" style="display: none;">
+                                <h4 data-i18n-key="accessibility.nav-shortcuts">🎮 界面快速导航</h4>
+                                <div class="form-group">
+                                    <label data-i18n-key="accessibility.nav-method">导航方式：</label>
+                                    <div style="margin-top: 10px;">
+                                        <label class="radio-label" style="margin-bottom: 8px;">
+                                            <input type="radio" name="accessibility-nav-type" value="disabled"> <span data-i18n-key="accessibility.nav-disabled">禁用键盘导航</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="accessibility-nav-type" value="arrows" checked> <span data-i18n-key="accessibility.arrow-keys">↑↓ 方向键</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label data-i18n-key="accessibility.nav-order">导航顺序：</label>
+                                    <div style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                                        <div>1 - 📝 <span data-i18n-key="nav.question-generator">智能出题器</span></div>
+                                        <div>2 - ✅ <span data-i18n-key="nav.answer-checker">智能批答案</span></div>
+                                        <div>3 - 🎯 <span data-i18n-key="nav.learning-plan">学习规划</span></div>
+                                        <div>4 - 💬 <span data-i18n-key="nav.ai-chat">AI互动</span></div>
+                                        <div>5 - ⏰ <span data-i18n-key="nav.plan-manager">学习计划</span></div>
+                                        <div>6 - 📊 <span data-i18n-key="nav.progress">学习进度</span></div>
+                                        <div>7 - 📋 <span data-i18n-key="nav.history">历史记录</span></div>
+                                        <div>8 - 📚 <span data-i18n-key="nav.learning-settings">学习设置</span></div>
+                                        <div>9 - 🎨 <span data-i18n-key="nav.user-settings">用户设置</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Button and Interaction Settings -->
+                            <div class="settings-group" id="accessibility-ui-group" style="display: none;">
+                                <h4 data-i18n-key="accessibility.ui-size">🔲 按钮和交互区域大小</h4>
+                                <div class="form-group">
+                                    <label data-i18n-key="accessibility.button-size">按钮大小：</label>
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                                        <input type="range" id="accessibility-button-size" min="80" max="150" value="100" step="5" style="flex: 1; cursor: pointer;">
+                                        <span style="font-weight: 600; color: var(--primary-color); min-width: 45px; text-align: right;" id="button-size-display">100%</span>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label data-i18n-key="accessibility.button-spacing">按钮间距：</label>
+                                    <div style="margin-top: 10px;">
+                                        <label class="radio-label" style="margin-bottom: 8px;">
+                                            <input type="radio" name="accessibility-spacing" value="tight"> <span data-i18n-key="accessibility.spacing-tight">紧凑</span>
+                                        </label>
+                                        <label class="radio-label" style="margin-bottom: 8px;">
+                                            <input type="radio" name="accessibility-spacing" value="normal" checked> <span data-i18n-key="accessibility.spacing-normal">标准</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="accessibility-spacing" value="relaxed"> <span data-i18n-key="accessibility.spacing-relaxed">宽松</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="accessibility-voice-buttons" checked> <span data-i18n-key="accessibility.show-voice-buttons">每个输入框旁显示语音按钮（🎤）</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Feedback Settings -->
+                            <div class="settings-group" id="accessibility-feedback-group" style="display: none;">
+                                <h4 data-i18n-key="accessibility.feedback">🔊 操作反馈</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="accessibility-key-sound" checked> <span data-i18n-key="accessibility.key-sound">按键时有声音反馈</span>
+                                    </label>
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="accessibility-voice-nav" checked> <span data-i18n-key="accessibility.voice-nav">切换页面时有语音提示</span>
+                                    </label>
+                                </div>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="accessibility-error-alerts" checked> <span data-i18n-key="accessibility.error-alerts">操作错误时有提示音</span>
+                                    </label>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label data-i18n-key="accessibility.feedback-volume">反馈音量：</label>
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                                        <input type="range" id="accessibility-feedback-volume" min="0" max="100" value="100" step="10" style="flex: 1; cursor: pointer;">
+                                        <span style="font-weight: 600; color: var(--primary-color); min-width: 40px; text-align: right;" id="feedback-volume-display">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reading Speed Settings -->
+                            <div class="settings-group">
+                                <h4 data-i18n-key="accessibility.reading-speed">🔊 阅读速度</h4>
+                                <div class="form-group">
+                                    <label data-i18n-key="accessibility.adjust-reading-speed">调整读出声的速度</label>
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                                        <input type="range" id="settings-reading-speed" min="0.5" max="2" value="1" step="0.1" style="flex: 1; cursor: pointer;">
+                                        <span style="font-weight: 600; color: var(--primary-color); min-width: 60px; text-align: right;" id="reading-speed-display">1.0x</span>
+                                    </div>
+                                    <p style="font-size: 0.9rem; color: #666; margin-top: 8px;" data-i18n-key="accessibility.reading-speed-help">💡 调整时会显示当前速度倍数（0.5x-2.0x）</p>
+                                </div>
+                            </div>
+
+                            <!-- Help and Info -->
+                            <div class="settings-group" id="accessibility-help-group" style="display: none;">
+                                <button class="btn btn-secondary" id="accessibility-help-btn" data-i18n-key="accessibility.show-help">❓ 显示所有快捷键说明</button>
+                            </div>
+                        </section>
+
+                        <!-- Status Message -->
+                        <div id="user-settings-message" class="settings-message"></div>
+
+                        <!-- Save Buttons -->
+                        <div class="settings-actions">
+                            <button class="btn btn-primary" onclick="window.app && window.app.saveSettings()" data-i18n-key="settings.save">💾 保存设置</button>
+                            <button class="btn btn-secondary" onclick="window.app && window.app.resetSettings()" data-i18n-key="settings.reset">🔄 重置为默认</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page: Learning Profiles (我的配置) -->
+                <div class="page-content" id="learning-profiles">
+                    <div class="settings-container">
+                        <h2>👤 我的学习配置</h2>
+                        <p class="settings-description">创建和管理多个学习配置，为不同科目设置个性化要求</p>
+
+                        <!-- Profiles List Section -->
+                        <section class="settings-section">
+                            <div class="section-header">
+                                <h3 class="section-title">📋 我的配置列表</h3>
+                                <p class="section-subtitle">点击编辑来修改配置详情</p>
+                            </div>
+
+                            <div id="profiles-list" class="profiles-list">
+                                <!-- Profiles will be added here dynamically -->
+                            </div>
+
+                            <button class="btn btn-primary" onclick="window.app && window.app.createNewProfile()" style="margin-top: 20px;">
+                                ➕ 新建配置
+                            </button>
+                        </section>
+
+                        <!-- Profile Edit Panel -->
+                        <section class="settings-section" id="profile-edit-panel" style="display: none;">
+                            <div class="section-header">
+                                <h3 class="section-title">✏️ 编辑配置</h3>
+                                <p class="section-subtitle" id="profile-edit-subtitle">新建配置</p>
+                            </div>
+
+                            <!-- Profile Name -->
+                            <div class="settings-group">
+                                <h4>配置名称</h4>
+                                <div class="form-group">
+                                    <input type="text" id="profile-name" placeholder="例如：数学强化版、英语基础版" style="width: 100%;">
+                                </div>
+                            </div>
+
+                            <!-- Study Settings -->
+                            <div class="settings-group">
+                                <h4>📚 学习设置</h4>
+
+                                <div class="form-group">
+                                    <label for="profile-grade">年级/水平</label>
+                                    <select id="profile-grade">
+                                        <option value="">-- 请选择 --</option>
+                                        <option value="primary-1">小学 1 年级</option>
+                                        <option value="primary-2">小学 2 年级</option>
+                                        <option value="primary-3">小学 3 年级</option>
+                                        <option value="primary-4">小学 4 年级</option>
+                                        <option value="primary-5">小学 5 年级</option>
+                                        <option value="primary-6">小学 6 年级</option>
+                                        <option value="junior-1">初中 1 年级</option>
+                                        <option value="junior-2">初中 2 年级</option>
+                                        <option value="junior-3">初中 3 年级</option>
+                                        <option value="senior-1">高中 1 年级</option>
+                                        <option value="senior-2">高中 2 年级</option>
+                                        <option value="senior-3">高中 3 年级</option>
+                                        <option value="year-9">Year 9</option>
+                                        <option value="year-10">Year 10</option>
+                                        <option value="year-11">Year 11</option>
+                                        <option value="year-12">Year 12</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>主要科目</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="math"> 数学</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="english"> 英文</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="science"> 科学</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="physics"> 物理</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="chemistry"> 化学</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="profile-subject" value="biology"> 生物</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>学习风格</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label"><input type="radio" name="profile-style" value="detailed"> 详细讲解</label>
+                                        <label class="radio-label"><input type="radio" name="profile-style" value="concise"> 精简概括</label>
+                                        <label class="radio-label"><input type="radio" name="profile-style" value="interactive"> 互动式</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>难度偏好</label>
+                                    <select id="profile-difficulty">
+                                        <option value="easy">基础级</option>
+                                        <option value="intermediate">中等级</option>
+                                        <option value="hard">进阶级</option>
+                                        <option value="expert">专家级</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="profile-include-solutions"> 包含详细解答
+                                    </label>
+                                    <label class="checkbox-label checkbox-large">
+                                        <input type="checkbox" id="profile-include-analysis"> 包含深度分析
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Custom Requirements -->
+                            <div class="settings-group">
+                                <h4>📝 详细学习要求</h4>
+                                <div class="form-group">
+                                    <label>请输入您的具体要求</label>
+                                    <textarea id="profile-requirements" placeholder="例如：需要更多实际生活例子&#10;重点讲解解题思想而不是答案&#10;请用简洁的语言，避免复杂术语&#10;包含常见错误分析" style="width: 100%; min-height: 120px;"></textarea>
+                                    <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">💡 这些要求会影响 AI 生成的所有内容（题目、解答、反馈等）</p>
+                                </div>
+                            </div>
+
+                            <!-- Voice Requirements -->
+                            <div class="settings-group">
+                                <h4>🎤 语音要求（可选）</h4>
+                                <div class="form-group">
+                                    <button class="btn btn-secondary" id="profile-record-btn" onclick="window.app && window.app.toggleProfileVoiceRecording()">
+                                        🎤 开始录音
+                                    </button>
+                                    <div id="profile-voice-status" style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                                        未录音
+                                    </div>
+                                    <button class="btn btn-small" id="profile-play-btn" onclick="window.app && window.app.playProfileVoice()" style="margin-top: 10px; display: none;">
+                                        ▶️ 播放预览
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="settings-actions">
+                                <button class="btn btn-primary" onclick="window.app && window.app.saveProfile()">💾 保存配置</button>
+                                <button class="btn btn-secondary" onclick="window.app && window.app.cancelProfileEdit()">取消</button>
+                                <button class="btn btn-small" id="profile-delete-btn" style="background-color: #dc3545; color: white; display: none;" onclick="window.app && window.app.deleteProfile()">🗑️ 删除配置</button>
+                            </div>
+
+                            <!-- Status Message -->
+                            <div id="profile-message" class="settings-message" style="margin-top: 15px;"></div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="help-modal-overlay" id="help-modal-overlay" style="display: none;" onclick="if(event.target === this) window.app && window.app.closeHelpModal();">
+        <div class="help-modal" id="help-modal">
+            <div class="help-modal-header">
+                <h2 id="help-modal-title">使用说明</h2>
+                <button class="help-modal-close" onclick="window.app && window.app.closeHelpModal()">✕</button>
+            </div>
+            <div class="help-modal-content" id="help-modal-content">
+                <!-- Content will be filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mind Map Modal -->
+    <div class="mindmap-modal" id="mindmap-modal">
+        <div class="mindmap-container">
+            <div class="mindmap-header">
+                <h2 id="mindmap-title" data-i18n-key="lp.learning-path-title">📚 学习路径 - 数学</h2>
+                <button class="mindmap-close" onclick="app.closeMindMap()">&times;</button>
+            </div>
+
+            <div class="mindmap-content-wrapper">
+                <!-- Left: Tree View -->
+                <div class="mindmap-tree-panel">
+                    <div id="mindmap-tree" class="mindmap-tree">
+                        <div class="loading-spinner" data-i18n-key="lp.generating-mindmap">生成思维导图中...</div>
+                    </div>
+                </div>
+
+                <!-- Right: Analysis -->
+                <div class="mindmap-analysis-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-i18n-key="lp.learning-recommendations">📖 学习建议</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-small btn-speak" id="speak-mindmap-analysis-btn" onclick="window.app && window.app.speakText(document.getElementById('mindmap-analysis').innerHTML, null, 'mindmap-analysis')" style="display: none;" title="点击读出内容" data-i18n-key="btn.speak">🔊 读出声</button>
+                            <button class="btn btn-small btn-stop" id="stop-mindmap-analysis-btn" onclick="window.app && window.app.stopSpeaking()" style="display: none;" title="停止读出" data-i18n-key="btn.stop">⏹ 停止</button>
+                        </div>
+                    </div>
+                    <div id="mindmap-analysis" class="mindmap-analysis-content">
+                        <p style="text-align: center; color: #999;" data-i18n-key="lp.analysis-loading">分析加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-container">
+            <div class="login-header">
+                <h2 id="login-title">登录 / 注册</h2>
+                <button class="login-close" onclick="app.closeLoginModal()">&times;</button>
+            </div>
+
+            <!-- Tab Selection -->
+            <div class="login-tabs">
+                <button class="login-tab active" id="login-tab-btn" data-tab="login">
+                    🔐 登录
+                </button>
+                <button class="login-tab" id="register-tab-btn" data-tab="register">
+                    ✍️ 注册
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="login-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" placeholder="输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" placeholder="输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">登录</button>
+                <div class="login-message" id="login-message"></div>
+            </form>
+
+            <!-- Register Form -->
+            <form class="login-form" id="register-form">
+                <div class="form-group">
+                    <label for="register-username">用户名</label>
+                    <input type="text" id="register-username" placeholder="创建用户名（3-20字符）" required minlength="3" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" placeholder="创建密码（至少6字符）" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="register-password-confirm">确认密码</label>
+                    <input type="password" id="register-password-confirm" placeholder="再次输入密码" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">注册</button>
+                <div class="login-message" id="register-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/languages.js?v=1.0.26"></script>
+    <script src="js/main.js?v=1.0.26"></script>
+
+    <!-- Simple test and diagnostic script -->
+    <script>
+        // Very simple test - if this runs, JavaScript is working
+        console.log('%c=== FutureTech AI Initialized ===', 'color: green; font-size: 14px');
+        console.log('Time:', new Date().toLocaleTimeString());
+
+        // Check if libraries are loaded
+        setTimeout(() => {
+            console.log('%cLibrary Check:', 'font-weight: bold');
+            console.log('LANGUAGES available:', typeof LANGUAGES !== 'undefined');
+            console.log('t() function available:', typeof t === 'function');
+            console.log('FutureTechApp class available:', typeof FutureTechApp !== 'undefined');
+        }, 100);
+    </script>
+
+    <!-- Manual fallback navigation test - add click handlers directly -->
+    <script>
+        // Add direct onclick handlers to nav items as fallback
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            console.log(`Found ${navItems.length} nav items`);
+
+            navItems.forEach((item, index) => {
+                const page = item.getAttribute('data-page');
+                console.log(`Nav item ${index + 1}: ${page}`);
+
+                // Add a direct onclick function as fallback
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Clicked nav item:', page);
+
+                    if (window.app) {
+                        window.app.switchPage(page);
+                    } else {
+                        console.error('App not initialized yet');
+                    }
+                }, false);
+            });
+
+            // Check if app is initialized
+            setTimeout(() => {
+                if (window.app) {
+                    console.log('%cApp initialized successfully!', 'color: green; font-weight: bold');
+                    console.log('Current page:', window.app.currentPage);
+                    console.log('Nav items count:', window.app.navItems?.length);
+                } else {
+                    console.error('%cApp failed to initialize!', 'color: red; font-weight: bold');
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

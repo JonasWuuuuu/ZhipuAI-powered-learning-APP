@@ -1,0 +1,17 @@
+# FutureTechFinalWebV1 - Backend Dependencies
+
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+
+# AI & Speech Services
+zhipuai==2.1.5.20250825
+openai-whisper==20250625
+
+# Audio Processing
+librosa==0.10.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+opencc-python-reimplemented==0.1.7
